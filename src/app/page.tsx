@@ -1,26 +1,32 @@
 // app/page.tsx
 import FineCalculator from '@/components/FineCalculator';
-import { getBaseUrl } from '@/lib/getBaseUrls';
+import { GetStaticPropsResult } from 'next';
 
 interface ExchangeRates {
   [key: string]: number;
 }
 
-async function fetchExchangeRates(): Promise<ExchangeRates> {
-  const res = await fetch(`${getBaseUrl()}/api/exchangeRate`, {
-    next: { revalidate: 86400 }, // Revalidate once every 24 hours
-  });
-  console.log(getBaseUrl(), res, await res.text());
-  const data = await res.json();
-  return data.rates || {};
+interface HomeProps {
+  exchangeRates: ExchangeRates;
 }
 
-export default async function Home() {
-  const exchangeRates = await fetchExchangeRates();
+export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
+  const exchangeRateData = await fetch('https://open.er-api.com/v6/latest/RUB');
+  const exchangeRates = await exchangeRateData.json();
 
+  return {
+    props: {
+      exchangeRates: exchangeRates.rates || {},
+    },
+    revalidate: 86400, // Revalidate once per day (24 hours)
+  };
+}
+const Home: React.FC<HomeProps> = ({ exchangeRates }) => {
   return (
     <main>
       <FineCalculator exchangeRates={exchangeRates} />
     </main>
   );
-}
+};
+
+export default Home;
