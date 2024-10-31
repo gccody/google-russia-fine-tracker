@@ -1,4 +1,5 @@
 // app/page.tsx
+import { getBaseUrl } from '@/lib/getBaseUrls';
 import FineCalculator from './components/FineCalculator';
 
 interface ExchangeRates {
@@ -6,7 +7,7 @@ interface ExchangeRates {
 }
 
 async function fetchExchangeRates(): Promise<ExchangeRates> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/exchangeRate`, {
+  const res = await fetch(`${getBaseUrl()}/api/exchangeRate`, {
     next: { revalidate: 86400 }, // Revalidate once every 24 hours
   });
   const data = await res.json();
