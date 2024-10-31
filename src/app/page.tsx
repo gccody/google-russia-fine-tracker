@@ -1,32 +1,31 @@
 // app/page.tsx
 import FineCalculator from '@/components/FineCalculator';
-import { GetStaticPropsResult } from 'next';
 
 interface ExchangeRates {
   [key: string]: number;
 }
 
-interface HomeProps {
-  exchangeRates: ExchangeRates;
+async function fetchExchangeRates(): Promise<ExchangeRates> {
+  // Fetch exchange rates from the API and use force-cache to cache it for 24 hours
+  const res = await fetch('https://open.er-api.com/v6/latest/RUB', {
+    next: { revalidate: 86400 }, // Revalidate once every 24 hours
+    cache: 'force-cache',        // Use Next.js force-cache feature
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch exchange rates');
+  }
+
+  const data = await res.json();
+  return data.rates;
 }
 
-export async function getStaticProps(): Promise<GetStaticPropsResult<HomeProps>> {
-  const exchangeRateData = await fetch('https://open.er-api.com/v6/latest/RUB');
-  const exchangeRates = await exchangeRateData.json();
+export default async function Home() {
+  const exchangeRates = await fetchExchangeRates();
 
-  return {
-    props: {
-      exchangeRates: exchangeRates.rates || {},
-    },
-    revalidate: 86400, // Revalidate once per day (24 hours)
-  };
-}
-const Home: React.FC<HomeProps> = ({ exchangeRates }) => {
   return (
     <main>
       <FineCalculator exchangeRates={exchangeRates} />
     </main>
   );
-};
-
-export default Home;
+}
