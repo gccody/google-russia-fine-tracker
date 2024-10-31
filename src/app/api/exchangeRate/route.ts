@@ -28,7 +28,7 @@ export async function GET() {
 
     console.log("No Cache", exchangeRateData);
     return NextResponse.json(exchangeRateData);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch exchange rates' }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ error: `Failed to fetch exchange rates: ${err}` }, { status: 500 });
   }
 }
