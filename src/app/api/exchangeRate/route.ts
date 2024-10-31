@@ -21,7 +21,7 @@ export async function GET() {
 
   try {
     const response = await axios.get<ExchangeRateResponse>(
-      `https://open.er-api.com/v6/${process.env.EXCHANGE_API_KEY}/latest/RUB`
+      `https://open.er-api.com/v6/latest/RUB`
     );
     exchangeRateData = response.data;
     lastFetchedDate = today;
