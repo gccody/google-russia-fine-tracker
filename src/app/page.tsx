@@ -1,6 +1,6 @@
 // app/page.tsx
+import FineCalculator from '@/components/FineCalculator';
 import { getBaseUrl } from '@/lib/getBaseUrls';
-import FineCalculator from './components/FineCalculator';
 
 interface ExchangeRates {
   [key: string]: number;
