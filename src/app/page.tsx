@@ -10,7 +10,7 @@ async function fetchExchangeRates(): Promise<ExchangeRates> {
   const res = await fetch(`${getBaseUrl()}/api/exchangeRate`, {
     next: { revalidate: 86400 }, // Revalidate once every 24 hours
   });
-  console.log(getBaseUrl(), res);
+  console.log(getBaseUrl(), res, await res.text());
   const data = await res.json();
   return data.rates || {};
 }
