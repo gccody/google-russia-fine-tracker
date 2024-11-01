@@ -9,7 +9,6 @@ async function fetchExchangeRates(): Promise<ExchangeRates> {
   // Fetch exchange rates from the API and use force-cache to cache it for 24 hours
   const res = await fetch('https://open.er-api.com/v6/latest/RUB', {
     next: { revalidate: 86400 }, // Revalidate once every 24 hours
-    cache: 'force-cache',        // Use Next.js force-cache feature
   });
 
   if (!res.ok) {
